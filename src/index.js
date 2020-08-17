@@ -30,14 +30,16 @@ module.exports = class Reader extends Component {
     showViewFinder: PropTypes.bool,
     style: PropTypes.any,
     className: PropTypes.string,
-    constraints: PropTypes.object
+    constraints: PropTypes.object,
+    binary: PropTypes.bool
   };
   static defaultProps = {
     delay: 500,
     resolution: 600,
     facingMode: 'environment',
     showViewFinder: true,
-    constraints: null
+    constraints: null,
+    binary: false
   };
 
   els = {};
@@ -270,7 +272,12 @@ module.exports = class Reader extends Component {
   handleWorkerMessage(e) {
     const { onScan, legacyMode, delay } = this.props
     const decoded = e.data
-    onScan(decoded || null)
+
+    if (this.props.binary) {
+      onScan(decoded.binaryData || null)
+    } else {
+      onScan(decoded.data || null)
+    }
 
     if (!legacyMode && typeof delay == 'number' && this.worker) {
       this.timeout = setTimeout(this.check, delay)
