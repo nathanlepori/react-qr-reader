@@ -273,11 +273,7 @@ module.exports = class Reader extends Component {
     const { onScan, legacyMode, delay } = this.props
     const decoded = e.data
 
-    if (this.props.binary) {
-      onScan(decoded.binaryData || null)
-    } else {
-      onScan(decoded.data || null)
-    }
+    onScan((this.props.binary ? decoded.binaryData : decoded.data) || null)
 
     if (!legacyMode && typeof delay == 'number' && this.worker) {
       this.timeout = setTimeout(this.check, delay)
